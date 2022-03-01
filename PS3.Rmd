@@ -45,10 +45,36 @@ For this problem set, you will not solve the Monty Hall Problem, but you will ha
 \end{enumerate}
 
 ```{r tidy=TRUE}
+#Question 1
+door <- 1 #this is storing a numeric value for door
+class(door) <- "door" #Then assigning it a class "door"
+
+#Question 2
+#Here I'm just creating a generic method for the PlayGame function
+PlayGame <- function(door) {
+  UseMethod("PlayGame")
+}
+
+#This is the specific method for a door class
+PlayGame.door <- function(door){ #It takes an input of a door that I defined above
+  car_door <- sample(c(1,2,3), 1, replace = TRUE) #It samples a number and assigns it to the car
+  if(door == car_door){ #First we check if our given door is the car door
+    print("Congrats you won a new car!") #Print a nice encouraging message if it s
+  } else{
+    print("You are a loser.") #Crush spirits otherwise, sympathies make the candidate weak.
+  }
+}
+set.seed(1000)
+#I tested my method here with the door I created above. Below I create other doors 
+#and test as well.
+PlayGame.door(door)
+
+
+#Question 3
 new_door <- function(number) { #Here I am defining a new function called "new_door" that accepts a single value
   door <- number #I'm storing the imputed number as an object defined in this function
   class(door) <- "door" #This is my assignment of the class "door" to this new object
-  validate <- function(door){ #I added a validation function within this to save time. I could've also written this separately
+  validate <- function(door){ #I added a validation function within this to save time. I could've also written this separately.
     if(!(door %in% c(1,2,3))){ #I opted to check if the imputed number was one of our accepted door values, if not I'm throwing an error.
       stop("Please enter 1, 2, or 3 as a value for this door")
     }
@@ -60,4 +86,6 @@ new_door <- function(number) { #Here I am defining a new function called "new_do
 door <- new_door(1)
 door
 
+PlayGame.door(new_door(2))
+PlayGame.door(new_door(3))
 ```
