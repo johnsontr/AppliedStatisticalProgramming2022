@@ -45,5 +45,19 @@ For this problem set, you will not solve the Monty Hall Problem, but you will ha
 \end{enumerate}
 
 ```{r tidy=TRUE}
-# Code
+new_door <- function(number) { #Here I am defining a new function called "new_door" that accepts a single value
+  door <- number #I'm storing the imputed number as an object defined in this function
+  class(door) <- "door" #This is my assignment of the class "door" to this new object
+  validate <- function(door){ #I added a validation function within this to save time. I could've also written this separately
+    if(!(door %in% c(1,2,3))){ #I opted to check if the imputed number was one of our accepted door values, if not I'm throwing an error.
+      stop("Please enter 1, 2, or 3 as a value for this door")
+    }
+  }
+  validate(door) #just running the validation function
+  return(door) #returning the output which should include the door value and class "door"
+}
+
+door <- new_door(1)
+door
+
 ```
