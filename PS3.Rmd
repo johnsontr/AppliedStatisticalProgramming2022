@@ -44,7 +44,7 @@ For this problem set, you will not solve the Monty Hall Problem, but you will ha
   \end{itemize}
 \end{enumerate}
 
-```{r tidy=TRUE}
+```{r tidy=TRUE, include = TRUE}
 #Question 1
 door <- 1 #this is storing a numeric value for door
 class(door) <- "door" #Then assigning it a class "door"
