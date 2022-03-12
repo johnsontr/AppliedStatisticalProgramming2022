@@ -1,6 +1,9 @@
 ---
 title: "Applied Statistical Programming - Spring 2022"
 output: pdf_document
+header-includes:
+- \newcommand{\benum}{\begin{enumerate}}
+- \newcommand{\eenum}{\end{enumerate}}
 ---
 
 ```{r setup, include=FALSE}
@@ -25,7 +28,7 @@ Due Wednesday, March 16, 10:00 AM (Before Class) \\
 
 Your task in this problem set is to combine two datasets in order to observe how many endorsements each candidate received using only \texttt{dplyr} functions. Use the same Presidential primary polls that were used for the in class worksheets on February 28 and March 2.
 
-```{r eval=FALSE}
+```{r, include=FALSE}
 # Change eval=FALSE in the code block. Install packages as appropriate.
 #install.packages("fivethirtyeight")
 library(fivethirtyeight)
@@ -49,6 +52,36 @@ First, create two new objects \texttt{polls} and \texttt{Endorsements}. Then com
   \item Now, using the knowledge from the last step change the label of the X and Y axes to be more informative, add a title. Save the plot in your forked repository.
 \end{itemize}
 
+```{r, include = TRUE, cache=TRUE}
+Endorsements <- Endorsements %>% #Using dplyr to rename the endorsee column
+  rename(candidate_name = endorsee)
+
+#This line will transform our dataframe into a tibble
+Endorsements <- as_tibble(Endorsements) 
+
+#Next we're going to use the "filter()" function to get 6 candidates and then 
+#use the "select()# function to chose our 5 variables. We can do both with the
+#piping function
+polls <- polls %>% 
+  filter(candidate_name == "Amy Klobuchar" | candidate_name == "Bernard Sanders" |
+           candidate_name == "Elizabeth Warren" | candidate_name == "Joseph R. Biden Jr."|
+           candidate_name == "Michael Bloomberg" |candidate_name == "Pete Buttigieg") %>% 
+  select(candidate_name, sample_size, start_date, party, pct)
+
+#Here I'm going to check for the unique candidate names in each dataset
+unique(polls$candidate_name)
+unique(Endorsements$candidate_name)
+#I'll need to change Bernie and Joe's name in the Endorements dataset to make
+#sure they match
+Endorsements <- Endorsements %>%
+  mutate(candidate_name = replace(candidate_name, candidate_name == 
+                                    "Bernie Sanders", "Bernard Sanders"), 
+         candidate_name = replace(candidate_name, candidate_name == 
+                                    "Joe Biden", "Joseph R. Biden Jr."))
+
+#We're going to join the two datasets on candidate_name
+new_data <- inner_join(polls, Endorsements, by = "candidate_name")
+```
 
 \section*{Text-as-Data with \texttt{tidyverse}}
 
