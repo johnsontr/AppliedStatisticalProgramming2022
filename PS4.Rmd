@@ -1,6 +1,9 @@
 ---
 title: "Applied Statistical Programming - Spring 2022"
 output: pdf_document
+header-includes:
+- \newcommand{\benum}{\begin{enumerate}}
+- \newcommand{\eenum}{\end{enumerate}}
 ---
 
 ```{r setup, include=FALSE}
@@ -25,9 +28,7 @@ Due Wednesday, March 16, 10:00 AM (Before Class) \\
 
 Your task in this problem set is to combine two datasets in order to observe how many endorsements each candidate received using only \texttt{dplyr} functions. Use the same Presidential primary polls that were used for the in class worksheets on February 28 and March 2.
 
-```{r eval=FALSE}
-# Change eval=FALSE in the code block. Install packages as appropriate.
-#install.packages("fivethirtyeight")
+```{r, include=FALSE}
 library(fivethirtyeight)
 library(tidyverse)
 # URL to the data that you've used.
@@ -49,22 +50,64 @@ First, create two new objects \texttt{polls} and \texttt{Endorsements}. Then com
   \item Now, using the knowledge from the last step change the label of the X and Y axes to be more informative, add a title. Save the plot in your forked repository.
 \end{itemize}
 
+```{r, include = TRUE, cache=TRUE}
+Endorsements <- Endorsements %>% #Using dplyr to rename the endorsee column
+  rename(candidate_name = endorsee)
+
+#This line will transform our dataframe into a tibble
+Endorsements <- as_tibble(Endorsements) 
+
+#Next we're going to use the "filter()" function to get 6 candidates and then 
+#use the "select()# function to chose our 5 variables. We can do both with the
+#piping function
+polls <- polls %>% 
+  filter(candidate_name == "Amy Klobuchar" | candidate_name == "Bernard Sanders" |
+           candidate_name == "Elizabeth Warren" | candidate_name == "Joseph R. Biden Jr."|
+           candidate_name == "Michael Bloomberg" |candidate_name == "Pete Buttigieg") %>% 
+  select(candidate_name, sample_size, start_date, party, pct)
+
+#Here I'm going to check for the unique candidate names in each dataset
+unique(polls$candidate_name)
+unique(Endorsements$candidate_name)
+#I'll need to change Bernie and Joe's name in the Endorements dataset to make
+#sure they match
+Endorsements <- Endorsements %>%
+  mutate(candidate_name = replace(candidate_name, candidate_name == 
+                                    "Bernie Sanders", "Bernard Sanders"), 
+         candidate_name = replace(candidate_name, candidate_name == 
+                                    "Joe Biden", "Joseph R. Biden Jr."))
+
+#We're going to join the two datasets on candidate_name
+new_data <- inner_join(polls, Endorsements, by = "candidate_name")
+
+
+#Here I'm counting the number of endorsements for each candidate
+candidate_endorsements <- new_data %>% 
+  group_by(candidate_name) %>% 
+  summarise(count = n())
+
+#Below is the plot I created
+p <- ggplot(data = new_data, aes(x = candidate_name)) +
+  geom_bar(fill = "light green", color = "dark green")
+
+
+#And I'm returning the plot with the dark theme
+p + theme_dark()
+
+#Lastly I'm changing the axis name
+p + theme_classic() + xlab("Candidate") + ylab("Number of Endorsements")
+```
 
 \section*{Text-as-Data with \texttt{tidyverse}}
 
 For this question you will be analyzing Tweets from President Trump for various characteristics. Load in the following packages and data:
 
-```{r eval=FALSE}
-# Change eval=FALSE in the code block. Install packages as appropriate.
+```{r, include = FALSE}
 library(tidyverse)
-#install.packages('tm')
 library(tm) 
-#install.packages('lubridate')
 library(lubridate)
-#install.packages('wordcloud')
 library(wordcloud)
-trump_tweets_url <- 'https://politicaldatascience.com/PDS/Datasets/trump_tweets.csv'
-tweets <- read_csv(trump_tweets_url)
+
 ```
 
 \begin{itemize}
@@ -75,3 +118,51 @@ tweets <- read_csv(trump_tweets_url)
   \item Now create a \texttt{wordcloud} to visualize the top 50 words the President uses in his tweets. Use only words that occur at least three times. Display the plot with words in random order and use 50 random colors. Save the plot into your forked repository.\item Create a \textit{document term matrix} called \texttt{DTM} that includes the argument \texttt{ control = list(weighting = weightTfIdf)}
   \item Finally, report the 50 words with the the highest tf.idf scores using a lower frequency bound of .8.
 \end{itemize}
+
+
+
+```{r, include = TRUE}
+trump_tweets_url <- 'https://politicaldatascience.com/PDS/Datasets/trump_tweets.csv'
+tweets <- read_csv(trump_tweets_url)
+so_i_dont_have_to_redownload_when_i_mess_up <- tweets
+#Here I'm separating the created variable into date and time
+tweets$date <- dmy_hm(tweets$created_at)
+
+#I use DPLYR to remove the tweets that are categorized as "retweets"
+most_rt <- tweets %>% 
+  filter(is_retweet == "FALSE") %>% #filtering our retweets
+  mutate(popular = retweet_count + favorite_count) %>% #here I create a 
+  #"popular" variable
+  slice_max(retweet_count, n = 5) %>% #I'm grabbing the 5 most re tweeted
+  pull(text) #I extracted just the tweet text
+most_rt #and printed it to the console
+
+#I'm doing the same thing below but with most popular
+most_pop <-tweets %>% 
+  filter(is_retweet == "FALSE") %>% 
+  mutate(popular = retweet_count + favorite_count) %>%
+  slice_max(popular, n = 5) %>% 
+  pull(text)
+
+most_pop #and printing to the console again
+
+#Here I'm creating a corpus of all the tweet content
+my_corpus <- VCorpus(VectorSource(tweets$text))
+
+#I can use this command to remove the whitespace
+my_corpus <- tm_map(my_corpus, stripWhitespace)
+
+#and this command to convert everything to lowercase
+my_corpus <- tm_map(my_corpus, content_transformer(tolower))
+
+#finally this one will remove the stopwords
+my_corpus <- tm_map(my_corpus, removeWords, stopwords("english"))
+
+#Using the wordcloud package I'll create a cloud
+wordcloud(my_corpus, min.freq = 3, max.words = 50, random.color = TRUE, random.order = TRUE)
+
+#here I'm saving the cloud to my forked repository
+pdf("./tweets.pdf")
+wordcloud(my_corpus, min.freq = 3, max.words = 50, random.color = TRUE, random.order = TRUE)
+dev.off()
+```
