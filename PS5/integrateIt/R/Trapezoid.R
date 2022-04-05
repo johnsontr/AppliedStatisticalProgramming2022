@@ -20,7 +20,7 @@ setClass(
     x = "numeric",
     y = "numeric",
     x1 = "numeric",
-    y1 = "numeric",
+    x_n = "numeric",
     n = "numeric",
     intg = "numeric"
   ),
@@ -31,7 +31,7 @@ setClass(
     x = NA_real_,
     y = NA_real_,
     x1 = NA_real_,
-    y1 = NA_real_,
+    x_n = NA_real_,
     n = NA_real_,
     intg = NA_real_
   )
