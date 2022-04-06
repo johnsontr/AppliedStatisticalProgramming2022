@@ -22,7 +22,7 @@ setGeneric(
 setMethod("integrateIt",
           definition = function(fun,x1,x_n,n,type){
             .xvalues <- seq(x1, x_n, length.out = (n))
-            if(rule == "trapezoid"){
+            if(type == "trapezoid"){
               .intg <- (((x_n-x1)/n)/2)*(fun(.xvalues[1])) + sum(2*(fun(.xvalues[2:(n-1)]))) + fun(.xvalues[n])
 
               .class <- new("Trapezoid",
@@ -42,7 +42,7 @@ setMethod("integrateIt",
             # Return the list of values requested
             return(list(Type = .class, integral = .intg, values = as.data.frame(cbind(.class@x, .class@y))))
           }
-          )
+    )
 
 
 
