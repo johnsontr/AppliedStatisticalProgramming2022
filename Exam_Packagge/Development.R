@@ -3,23 +3,23 @@ library(devtools)
 library(roxygen2)
 
 #Package directory
-setwd("/Users/amaancharaniya/Documents/WashU/Year Two/R Class/Problem Sets/AppliedStatisticalProgramming2022/Exam_Package") 
-
-#Compliling my code and checking it
-current.code <- as.package("PoisMLE")
+setwd("~/Documents/WashU/Year Two/R Class/Problem Sets/AppliedStatisticalProgramming2022/Exam_Packagge")
+#Compiling my code and checking it
+current.code <- as.package("easyPois")
 check(current.code)
 load_all(current.code)
 document(current.code)
 
-## Install package
-# install(current.code) 
+## loading package
+setwd("~/Documents/WashU/Year Two/R Class/Problem Sets/AppliedStatisticalProgramming2022/Exam_Packagge/easyPois")
+devtools::load_all()
 
 
 ## Let's look at a function
-?`PoisMLE-class`
+??`PoisMLE-class`
 ?logLik
 ?mle
-?standardError
+?standarderror
 ?estimatePois
 
 
