@@ -33,6 +33,8 @@ setGeneric(name = "standarderror",
 #defining my function
 setMethod(f = "standarderror",
           definition = function(y, type){
+            if(!is.numeric(y)){stop("Please get the letters or words out of your data")}
+            if(any(y < 0)){stop("It's a Poisson distribution, you can only have zeroes or positive numbers please, thank you")}
             boots <- NULL
             if(type == "basic"){ #I check the type of se the user wants
               stde <- sqrt(mle(y)/length(y)) #and calculate it out simply

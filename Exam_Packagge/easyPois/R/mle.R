@@ -30,6 +30,8 @@ setGeneric(name = "mle",
 #defining my function
 setMethod(f = "mle",
           definition = function(y){
+            if(!is.numeric(y)){stop("Please get the letters or words out of your data")}
+            if(any(y < 0)){stop("It's a Poisson distribution, you can only have zeroes or positive numbers please, thank you")}
             m <- sum(y)/length(y)
             return(m)
           }

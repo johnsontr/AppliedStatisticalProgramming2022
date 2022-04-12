@@ -39,6 +39,14 @@ setClass(Class="PoisMLE",
          )
 )
 
+#' @export
+#Set up validity checks
+setValidity("PoisMLE",function(object){
+  #check to confirm only numbers are being inputed
+  if(!is.numeric(y)){stop("The observations must all be numbers")}
+  if(any(object@y < 0)){stop("Only zeros and positive numbers")}
+  })
+
 
 #' @export
 #initialize the class

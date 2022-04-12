@@ -3,7 +3,7 @@
 #' this fuction will generate the log likelihood for your data
 #'
 #' @param y this is a numeric vector of your observed data, please don't put characters in here.
-#' @param L this is your lambda. You need this. you can calculate it with the mle function in this package but you need a lambda 
+#' @param L this is your lambda. You need this. you can calculate it with the mle function in this package but you need a lambda
 #'
 #' @return A single numeric output:
 #'  \item{mle}{you'll get the loglikelihood of your data if you did this right}
@@ -31,8 +31,10 @@ setGeneric(name = "logLik",
 
 #defining my function
 setMethod(f = "logLik",
-          definition = function(y, L){
+          definition = function(y, L){ #input data and a lambda value
+            if(!is.numeric(y)){stop("Please get the letters or words out of your data")}
+            if(any(y < 0)){stop("It's a Poisson distribution, you can only have zeroes or positive numbers please, thank you")}
             LL <- -1*(length(y)*L)-sum(log(factorial(y)))+log(L)*sum(factorial(y))
-            return(LL)
+            return(LL) #returns the loglikelihood estimation
           }
 )
