@@ -1,0 +1,12 @@
+Package: PS6package
+Type: Package
+Title: PS6package
+Version: 1.0
+Date: 2022-04-28
+Author: Amaan Charaniya
+Maintainer: Amaan Charaniya <a.charaniya@wustl.edu>
+Description: Follows instructions from 
+License: GPL (>= 2)
+Imports: Rcpp (>= 1.0.8)
+LinkingTo: Rcpp
+RoxygenNote: 7.1.2
