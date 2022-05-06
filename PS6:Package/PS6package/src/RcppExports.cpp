@@ -10,6 +10,21 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// emba_calculate
+NumericVector emba_calculate(NumericMatrix x, NumericVector y, NumericVector weights, double sd, double limit);
+RcppExport SEXP _PS6package_emba_calculate(SEXP xSEXP, SEXP ySEXP, SEXP weightsSEXP, SEXP sdSEXP, SEXP limitSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type weights(weightsSEXP);
+    Rcpp::traits::input_parameter< double >::type sd(sdSEXP);
+    Rcpp::traits::input_parameter< double >::type limit(limitSEXP);
+    rcpp_result_gen = Rcpp::wrap(emba_calculate(x, y, weights, sd, limit));
+    return rcpp_result_gen;
+END_RCPP
+}
 // w
 NumericVector w(NumericMatrix zs);
 RcppExport SEXP _PS6package_w(SEXP zsSEXP) {
@@ -37,6 +52,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_PS6package_emba_calculate", (DL_FUNC) &_PS6package_emba_calculate, 5},
     {"_PS6package_w", (DL_FUNC) &_PS6package_w, 1},
     {"_PS6package_z", (DL_FUNC) &_PS6package_z, 4},
     {NULL, NULL, 0}
